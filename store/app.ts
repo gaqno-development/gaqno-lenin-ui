@@ -3,7 +3,7 @@ export const useAppStore = defineStore("app", {
     darkMode: true,
     loading: false,
     language: "pt",
-    provider: "gemini" as "openai" | "gemini",
+    model: "qwen/qwen3-4b",
     sidemenu: false,
     modal: {
       show: false,
@@ -35,8 +35,8 @@ export const useAppStore = defineStore("app", {
       const index = langs.indexOf(this.language);
       this.language = langs[(index + 1) % langs.length];
     },
-    setProvider(provider: "openai" | "gemini") {
-      this.provider = provider;
+    setModel(model: string) {
+      this.model = model;
     },
   },
 });

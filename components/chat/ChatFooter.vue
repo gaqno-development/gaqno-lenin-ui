@@ -52,7 +52,7 @@
             <li>• TypeScript</li>
             <li>• Tailwind CSS</li>
             <li>• OpenAI API</li>
-            <li>• ElevenLabs TTS</li>
+            <li>• TTS (gaqno-ai-service)</li>
           </ul>
         </div>
 

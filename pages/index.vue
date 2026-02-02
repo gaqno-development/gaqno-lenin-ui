@@ -89,8 +89,8 @@
               <span class="text-sm font-medium">Tecnologia</span>
             </div>
             <p class="text-sm text-muted-foreground ml-7">
-              Desenvolvido com Nuxt 3, OpenAI GPT-4, ElevenLabs e Supabase.
-              Interface moderna com Tailwind CSS e Shadcn/ui.
+              Desenvolvido com Nuxt 3, OpenAI GPT-4, TTS (gaqno-ai-service) e
+              Supabase. Interface moderna com Tailwind CSS e Shadcn/ui.
             </p>
           </div>
 
@@ -158,21 +158,38 @@
         </DialogHeader>
         <div class="space-y-4">
           <div class="space-y-2">
-            <Label>Provider de IA</Label>
-            <Select 
-              :model-value="app.provider" 
-              @update:model-value="(value) => {
-                if (value === 'openai' || value === 'gemini') {
-                  app.setProvider(value);
+            <Label>Modelo de IA</Label>
+            <Select
+              :model-value="app.model"
+              @update:model-value="
+                (value) => {
+                  if (value) {
+                    app.setModel(value);
+                  }
                 }
-              }"
+              "
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecione o provider" />
+                <SelectValue placeholder="Selecione o modelo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini">Gemini</SelectItem>
-                <SelectItem value="openai">OpenAI</SelectItem>
+                <SelectItem
+                  v-for="model in availableModels"
+                  :key="model.id"
+                  :value="model.id"
+                >
+                  {{ model.id }} ({{ model.provider || model.owned_by }})
+                </SelectItem>
+                <SelectItem v-if="loadingModels" value="" disabled>
+                  Carregando modelos...
+                </SelectItem>
+                <SelectItem
+                  v-if="!loadingModels && availableModels.length === 0"
+                  value=""
+                  disabled
+                >
+                  Nenhum modelo disponível
+                </SelectItem>
               </SelectContent>
             </Select>
             <p class="text-sm text-muted-foreground">
@@ -206,9 +223,10 @@ import { useClientStore } from "~/store/client";
 import { useAudioStore } from "~/store/audio";
 import type { User } from "~/types";
 import { useChatCompletion } from "~/service/ai-provider";
-import { postElevenLabsTextToSpeech } from "~/service/elevenlabs";
+import { postTextToSpeech } from "~/service/elevenlabs";
 import type { IChatMessage } from "~/components/chat/ChatMessage.vue";
 import { useToast } from "~/composables/useToast";
+import { getApiUrl } from "~/lib/api-config";
 
 // Component imports
 import ChatHeader from "~/components/chat/ChatHeader.vue";
@@ -246,6 +264,10 @@ const responseStream = ref<IChatMessage[]>([]);
 const showAboutDialog = ref(false);
 const showSettingsDialog = ref(false);
 const showCommandPalette = ref(false);
+const availableModels = ref<
+  Array<{ id: string; owned_by: string; provider?: string }>
+>([]);
+const loadingModels = ref(false);
 
 // Detect mobile
 const isMobile = ref(false);
@@ -257,6 +279,13 @@ const checkMobile = () => {
 onMounted(() => {
   checkMobile();
   window.addEventListener("resize", checkMobile);
+  fetchModels();
+});
+
+watch(showSettingsDialog, (isOpen) => {
+  if (isOpen) {
+    fetchModels();
+  }
 });
 
 onUnmounted(() => {
@@ -264,6 +293,40 @@ onUnmounted(() => {
 });
 
 // Methods
+const fetchModels = async () => {
+  if (availableModels.value.length > 0) return;
+
+  loadingModels.value = true;
+  try {
+    const apiUrl = getApiUrl();
+    const response = await fetch(`${apiUrl}/v1/models`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      availableModels.value = data.data || [];
+
+      if (availableModels.value.length > 0 && !app.model) {
+        app.setModel(availableModels.value[0].id);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching models:", error);
+    availableModels.value = [
+      { id: "qwen/qwen3-4b", owned_by: "google", provider: "openai" },
+      { id: "gpt-4o", owned_by: "openai", provider: "openai" },
+      { id: "gemini-2.5-pro", owned_by: "google", provider: "gemini" },
+      { id: "gpt-3.5-turbo", owned_by: "openai", provider: "openai" },
+    ];
+  } finally {
+    loadingModels.value = false;
+  }
+};
+
 const fetchGit = () => {
   app.setLoading(true);
   return new Promise((resolve, reject) => {
@@ -288,9 +351,12 @@ const fetchGit = () => {
 };
 
 const ask = (questionText: string) => {
-  const buildHistory = (): Array<{ role: "user" | "assistant"; content: string }> => {
+  const buildHistory = (): Array<{
+    role: "user" | "assistant";
+    content: string;
+  }> => {
     const history: Array<{ role: "user" | "assistant"; content: string }> = [];
-    
+
     for (const msg of responseStream.value) {
       if (msg.role === "user") {
         history.push({ role: "user", content: msg.data });
@@ -298,7 +364,7 @@ const ask = (questionText: string) => {
         history.push({ role: "assistant", content: msg.data });
       }
     }
-    
+
     return history;
   };
 
@@ -312,7 +378,7 @@ const ask = (questionText: string) => {
     showInfo("Pergunta enviada", "Processando sua pergunta...");
   }
 
-  useChatCompletion(questionText, app.provider, history)
+  useChatCompletion(questionText, app.model, history)
     .then((data: any) => {
       const { message } = data;
       loadingMessage.value = false;
@@ -322,7 +388,7 @@ const ask = (questionText: string) => {
       app.setLoading(false);
 
       if (audioStore.generateAudio) {
-        postElevenLabsTextToSpeech({
+        postTextToSpeech({
           headers: ["audio/mpeg"],
           params: {
             optimize_streaming_latency: 0,

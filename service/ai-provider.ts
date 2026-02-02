@@ -9,7 +9,7 @@ interface ChatMessage {
 
 interface ChatCompletionRequest {
   question: string;
-  provider?: "openai" | "gemini";
+  model?: string;
   history?: ChatMessage[];
 }
 
@@ -22,7 +22,7 @@ interface ChatCompletionResponse {
 
 const useChatCompletion = async (
   question: string,
-  provider?: "openai" | "gemini",
+  model?: string,
   history?: ChatMessage[],
 ): Promise<ChatCompletionResponse> => {
   const { setMetricsHeaders } = useUserMetrics();
@@ -48,8 +48,8 @@ const useChatCompletion = async (
     question,
   };
 
-  if (provider) {
-    requestBody.provider = provider;
+  if (model) {
+    requestBody.model = model;
   }
 
   if (history && history.length > 0) {

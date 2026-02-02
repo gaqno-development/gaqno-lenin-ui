@@ -1,6 +1,6 @@
-import { getApiUrl } from "~/lib/api-config";
+import { getAiServiceUrl } from "~/lib/api-config";
 
-export interface IDTOElevenLabs {
+export interface ITextToSpeechPayload {
   headers?: string[];
   params?: Record<string, string | number | boolean>;
   payload: {
@@ -10,11 +10,11 @@ export interface IDTOElevenLabs {
   };
 }
 
-export const postElevenLabsTextToSpeech = async (
-  body: IDTOElevenLabs,
+export const postTextToSpeech = async (
+  body: ITextToSpeechPayload
 ): Promise<ArrayBuffer> => {
-  const apiUrl = getApiUrl();
-  const response = await fetch(`${apiUrl}/elevenlabs/text-to-speech`, {
+  const baseUrl = getAiServiceUrl();
+  const response = await fetch(`${baseUrl}/audio/text-to-speech`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,8 +23,12 @@ export const postElevenLabsTextToSpeech = async (
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: "Erro ao gerar áudio" }));
-    const error = new Error(errorData.message || "Erro ao gerar áudio") as Error & { statusCode?: number };
+    const errorData = await response
+      .json()
+      .catch(() => ({ message: "Erro ao gerar áudio" }));
+    const error = new Error(
+      errorData.message || "Erro ao gerar áudio"
+    ) as Error & { statusCode?: number };
     error.statusCode = response.status;
     throw error;
   }
@@ -32,4 +36,5 @@ export const postElevenLabsTextToSpeech = async (
   return response.arrayBuffer();
 };
 
-
+/** @deprecated Use postTextToSpeech. Kept for backward compatibility. */
+export const postElevenLabsTextToSpeech = postTextToSpeech;
