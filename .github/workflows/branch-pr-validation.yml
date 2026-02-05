@@ -1,0 +1,38 @@
+name: Branch & PR Validation
+
+on:
+  push:
+    branches-ignore: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-branch:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          if ! echo "$BRANCH" | grep -qE '^(feature|fix|refactor|docs|ci|chore)/KAN-[0-9]+'; then
+            echo "::error::Branch must match: (feature|fix|refactor|docs|ci|chore)/KAN-XX-description"
+            echo "Current branch: $BRANCH"
+            echo "Example: feature/KAN-46-session-hooks"
+            exit 1
+          fi
+          echo "Branch name valid: $BRANCH"
+
+  validate-pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          if ! echo "$TITLE" | grep -qE 'KAN-[0-9]+'; then
+            echo "::error::PR title must include Jira key (e.g. KAN-46)"
+            echo "Current title: $TITLE"
+            echo "Example: KAN-46 Migrate Session hooks to page folders"
+            exit 1
+          fi
+          echo "PR title valid: $TITLE"
