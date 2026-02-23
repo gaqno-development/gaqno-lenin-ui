@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
 @theme inline {
@@ -20,8 +22,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -45,113 +45,125 @@
 }
 
 :root {
-  --background: hsl(40 30% 94%);
-  --foreground: hsl(0 0% 20%);
-
-  --card: hsl(40 30% 90%);
-  --card-foreground: hsl(0 0% 20%);
-
-  --popover: hsl(40 30% 94%);
-  --popover-foreground: hsl(0 0% 20%);
-
-  --primary: hsl(355 70% 45%);
-  --primary-foreground: hsl(40 30% 94%);
-
-  --secondary: hsl(40 20% 85%);
-  --secondary-foreground: hsl(0 0% 20%);
-
-  --muted: hsl(40 15% 80%);
-  --muted-foreground: hsl(0 0% 40%);
-
-  --accent: hsl(45 100% 50%);
-  --accent-foreground: hsl(0 0% 20%);
-
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(40 30% 94%);
-
-  --success: hsl(142.1 76.2% 36.3%);
-  --success-foreground: hsl(355.7 100% 97.3%);
-
-  --border: hsl(0 0% 20%);
-  --input: hsl(0 0% 20%);
-  --ring: hsl(355 70% 45%);
-
-  --radius: 0.2rem;
-
-  --chart-1: hsl(355 70% 45%);
-  --chart-2: hsl(45 90% 40%);
-  --chart-3: hsl(25 30% 30%);
-  --chart-4: hsl(15 40% 40%);
-  --chart-5: hsl(0 0% 20%);
-
-  --sidebar: hsl(40 30% 92%);
-  --sidebar-foreground: hsl(0 0% 20%);
-  --sidebar-primary: hsl(355 70% 45%);
-  --sidebar-primary-foreground: hsl(40 30% 94%);
-  --sidebar-accent: hsl(40 20% 85%);
-  --sidebar-accent-foreground: hsl(0 0% 20%);
-  --sidebar-border: hsl(0 0% 20%);
-  --sidebar-ring: hsl(355 70% 45%);
+  /* Antique Light Mode (Paper & Ink) */
+  --background: 40 30% 94%;  /* Cream Paper */
+  --foreground: 0 0% 20%;    /* Ink Black */
+  
+  --card: 40 30% 90%;        /* Slightly darker paper */
+  --card-foreground: 0 0% 20%;
+  
+  --popover: 40 30% 94%;
+  --popover-foreground: 0 0% 20%;
+  
+  --primary: 355 70% 45%;    /* Soviet Red */
+  --primary-foreground: 40 30% 94%;
+  
+  --secondary: 40 20% 85%;   /* Faded Paper */
+  --secondary-foreground: 0 0% 20%;
+  
+  --muted: 40 15% 80%;
+  --muted-foreground: 0 0% 40%;
+  
+  --accent: 45 100% 50%;     /* Gold */
+  --accent-foreground: 0 0% 20%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 40 30% 94%;
+  
+  --success: 142.1 76.2% 36.3%;
+  --success-foreground: 355.7 100% 97.3%;
+  
+  --border: 0 0% 20%;        /* Ink border */
+  --input: 0 0% 20%;
+  --ring: 355 70% 45%;
+  
+  --radius: 0.2rem;          /* Sharp corners for antique feel */
+  
+  /* Chart colors adapted for antique feel */
+  --chart-1: 355 70% 45%;
+  --chart-2: 45 90% 40%;
+  --chart-3: 25 30% 30%;
+  --chart-4: 15 40% 40%;
+  --chart-5: 0 0% 20%;
+  
+  --sidebar: 40 30% 92%;
+  --sidebar-foreground: 0 0% 20%;
+  --sidebar-primary: 355 70% 45%;
+  --sidebar-primary-foreground: 40 30% 94%;
+  --sidebar-accent: 40 20% 85%;
+  --sidebar-accent-foreground: 0 0% 20%;
+  --sidebar-border: 0 0% 20%;
+  --sidebar-ring: 355 70% 45%;
 }
 
 .dark {
-  --background: hsl(0 0% 10%);
-  --foreground: hsl(40 20% 90%);
-
-  --card: hsl(0 0% 14%);
-  --card-foreground: hsl(40 20% 90%);
-
-  --popover: hsl(0 0% 12%);
-  --popover-foreground: hsl(40 20% 90%);
-
-  --primary: hsl(355 70% 45%);
-  --primary-foreground: hsl(40 20% 90%);
-
-  --secondary: hsl(0 0% 18%);
-  --secondary-foreground: hsl(40 20% 90%);
-
-  --muted: hsl(0 0% 18%);
-  --muted-foreground: hsl(40 10% 60%);
-
-  --accent: hsl(45 80% 45%);
-  --accent-foreground: hsl(40 20% 90%);
-
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(40 20% 90%);
-
-  --success: hsl(142.1 70.6% 45.3%);
-  --success-foreground: hsl(144.9 80.4% 10%);
-
-  --border: hsl(40 20% 30%);
-  --input: hsl(40 20% 30%);
-  --ring: hsl(355 60% 45%);
-
-  --chart-1: hsl(355 70% 50%);
-  --chart-2: hsl(45 80% 45%);
-  --chart-3: hsl(30 40% 50%);
-  --chart-4: hsl(280 65% 60%);
-  --chart-5: hsl(340 75% 55%);
-
-  --sidebar: hsl(0 0% 12%);
-  --sidebar-foreground: hsl(40 20% 90%);
-  --sidebar-primary: hsl(355 70% 45%);
-  --sidebar-primary-foreground: hsl(40 20% 90%);
-  --sidebar-accent: hsl(0 0% 18%);
-  --sidebar-accent-foreground: hsl(40 20% 90%);
-  --sidebar-border: hsl(40 20% 30%);
-  --sidebar-ring: hsl(355 60% 45%);
+  /* Antique Dark Mode (Blackboard & Chalk/Gold) */
+  --background: 0 0% 10%;    /* Dark Charcoal */
+  --foreground: 40 20% 90%;  /* Old Paper/Chalk */
+  
+  --card: 0 0% 14%;
+  --card-foreground: 40 20% 90%;
+  
+  --popover: 0 0% 12%;
+  --popover-foreground: 40 20% 90%;
+  
+  --primary: 355 70% 45%;    /* Soviet Red */
+  --primary-foreground: 40 20% 90%;
+  
+  --secondary: 0 0% 18%;
+  --secondary-foreground: 40 20% 90%;
+  
+  --muted: 0 0% 18%;
+  --muted-foreground: 40 10% 60%;
+  
+  --accent: 45 80% 45%;      /* Dull Gold */
+  --accent-foreground: 40 20% 90%;
+  
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 40 20% 90%;
+  
+  --success: 142.1 70.6% 45.3%;
+  --success-foreground: 144.9 80.4% 10%;
+  
+  --border: 40 20% 30%;      /* Faded Chalk border */
+  --input: 40 20% 30%;
+  --ring: 355 60% 45%;
+  
+  --chart-1: 355 70% 50%;
+  --chart-2: 45 80% 45%;
+  --chart-3: 30 40% 50%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+  
+  --sidebar: 0 0% 12%;
+  --sidebar-foreground: 40 20% 90%;
+  --sidebar-primary: 355 70% 45%;
+  --sidebar-primary-foreground: 40 20% 90%;
+  --sidebar-accent: 0 0% 18%;
+  --sidebar-accent-foreground: 40 20% 90%;
+  --sidebar-border: 40 20% 30%;
+  --sidebar-ring: 355 60% 45%;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply outline-none focus:outline-none focus:ring-2 focus:ring-ring/50;
   }
   body {
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  /* Smooth theme transition */
   html {
     transition: background-color 0.3s ease;
+  }
+
+  /* Ensure all elements transition smoothly */
+  *,
+  *::before,
+  *::after {
+    transition: background-color 0.3s ease, border-color 0.3s ease,
+      color 0.3s ease;
   }
 }
