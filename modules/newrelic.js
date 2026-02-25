@@ -1,10 +1,14 @@
-// Source - https://stackoverflow.com/a
-// Posted by Daniel von Mirbach
-// Retrieved 2025-12-04, License - CC BY-SA 4.0
+import { defineNuxtModule } from "@nuxt/kit";
 
-module.exports = function () {
-    this.nuxt.hook("listen", () => {
-      require("newrelic");
+export default defineNuxtModule({
+  meta: { name: "newrelic" },
+  setup(_options, nuxt) {
+    nuxt.hook("listen", () => {
+      try {
+        require("newrelic");
+      } catch {
+        // newrelic not available in build context
+      }
     });
-  };
-  
+  },
+});
