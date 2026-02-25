@@ -74,38 +74,45 @@ export const useClientMetrics = () => {
     return { browser, os, device };
   };
 
+  const METRICS_TIMEOUT_MS = 5_000;
+
+  const fetchWithTimeout = (url: string, ms: number): Promise<Response> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), ms);
+    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
+  };
+
   const getClientMetrics = async (): Promise<IClientMetrics> => {
     const userAgent = navigator.userAgent;
     const browserInfo = parseUserAgent(userAgent);
     const timezone = getTimezone();
     const language = getLanguage();
 
-    // Get IP address using a public service
-    let userIp = null;
+    let userIp: string | null = null;
     try {
-      const response = await fetch("https://api.ipify.org?format=json");
+      const response = await fetchWithTimeout("https://api.ipify.org?format=json", METRICS_TIMEOUT_MS);
       const data = await response.json();
-      userIp = data.ip;
+      userIp = data.ip ?? null;
     } catch (error) {
       console.error("Error getting IP address:", error);
     }
 
-    // Get location from IP
-    let city = null;
-    let country = null;
-    let region = null;
+    let city: string | null = null;
+    let country: string | null = null;
+    let region: string | null = null;
 
     if (userIp) {
       try {
-        const response = await fetch(
-          `http://ip-api.com/json/${userIp}?fields=city,country,regionName`
+        const response = await fetchWithTimeout(
+          `http://ip-api.com/json/${userIp}?fields=city,country,regionName`,
+          METRICS_TIMEOUT_MS,
         );
         const data = await response.json();
 
         if (data.status === "success") {
-          city = data.city || null;
-          country = data.country || null;
-          region = data.regionName || null;
+          city = data.city ?? null;
+          country = data.country ?? null;
+          region = data.regionName ?? null;
         }
       } catch (error) {
         console.error("Error resolving IP location:", error);
