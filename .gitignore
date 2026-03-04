@@ -1,37 +1,41 @@
-node_modules
-*.log*
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build (Nuxt)
+dist/
 .nuxt
 .nitro
 .cache
 .output
+
+# Environment
 .env
-.npmrc
-dist
+!.env.example
+!.env.template
+
+# Logs
+*.log
+
+# OS
 .DS_Store
+
+# NPM (secrets)
+.npmrc
+
+# IDE
 .fleet
 .idea
 .cursor
 
-# Coverage reports (comprehensive)
+# Coverage
+coverage/
 *.lcov
 lcov.info
 junit.xml
 clover.xml
 coverage-summary.json
 coverage-final.json
-coverage-*.xml
-coverage-*.json
 coverage-report/
 test-results/
-
-# Coverage reports (comprehensive)
-*.lcov
-lcov.info
-junit.xml
-clover.xml
-coverage-summary.json
-coverage-final.json
-coverage-*.xml
-coverage-*.json
-coverage-report/
-test-results/
+.nyc_output/
