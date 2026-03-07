@@ -1,3 +1,4 @@
+import { defineStore } from "pinia";
 import type { User } from "~/types";
 
 export const useClientStore = defineStore("client", {
