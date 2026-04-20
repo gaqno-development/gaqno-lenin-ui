@@ -1,4 +1,0 @@
-# Skip test if push-all.sh already ran it (avoids double run)
-if [ -z "$GAQNO_TESTS_ALREADY_RAN" ]; then
-  npm run test
-fi
